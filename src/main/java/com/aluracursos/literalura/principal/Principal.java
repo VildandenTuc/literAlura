@@ -43,7 +43,7 @@ public class Principal {
                     buscarLibroPorTitulo();
                     break;
                 case 2:
-                    //listarLibrosRegistrados();
+                    listarLibrosRegistrados();
                     break;
                 case 3:
                     //listarAutoresRegistrados();
@@ -66,7 +66,8 @@ public class Principal {
 
     }
 
-   //Consumo desde la API de Gutendex
+    //Consumo desde la API de Gutendex
+
     private void buscarLibroPorTitulo() {
         System.out.println("Escribe el nombre del libro que deseas buscar");
         var nombreLibro = teclado.nextLine();
@@ -83,9 +84,17 @@ public class Principal {
         }
     }
 
-
-
     //Consumo desde la DB db_literalura
+
+    private void listarLibrosRegistrados() {
+        System.out.println("Libros registrados: ");
+        var json = consumoApi.obtenerDatos(URL_BASE);
+        var datos = conversor.obtenerDatos(json, Datos.class);
+        datos.resultados().stream()
+                .limit(30)
+                .map(l -> l.titulo().toUpperCase())
+                .forEach(System.out::println);
+    }
 
 //    private void listarAutoresRegistrados() {
 //        System.out.println("Los autores registrados (Copyright) son: ");
