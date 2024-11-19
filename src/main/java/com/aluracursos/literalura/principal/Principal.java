@@ -1,7 +1,10 @@
 package com.aluracursos.literalura.principal;
 
 import com.aluracursos.literalura.model.Datos;
+import com.aluracursos.literalura.model.DatosAutor;
 import com.aluracursos.literalura.model.DatosLibros;
+import com.aluracursos.literalura.model.Libro;
+import com.aluracursos.literalura.repository.LibroRepository;
 import com.aluracursos.literalura.service.ConsumoAPI;
 import com.aluracursos.literalura.service.ConvierteDatos;
 
@@ -14,6 +17,11 @@ public class Principal {
     private ConsumoAPI consumoApi = new ConsumoAPI();
     private final String URL_BASE = "https://gutendex.com/books/";
     private ConvierteDatos conversor = new ConvierteDatos();
+    private LibroRepository repositorio;
+
+    public Principal(LibroRepository repository) {
+        this.repositorio = repository;
+    }
 
     public void muestraElMenu() {
         var json = consumoApi.obtenerDatos(URL_BASE);
@@ -29,6 +37,8 @@ public class Principal {
                     4 - Listar autores vivos antes de un determinado año
                     5 - Listar libros por idioma
                     6 - Listar los 5 libros más descargados
+                    
+                    7 - TEST
 
                     0 - Salir
                     
@@ -46,7 +56,7 @@ public class Principal {
                     listarLibrosRegistrados();
                     break;
                 case 3:
-                    //listarAutoresRegistrados();
+                    listarAutoresRegistrados();
                     break;
                 case 4:
                     listarAutoresVivosPorAnio();
@@ -56,6 +66,9 @@ public class Principal {
                     break;
                 case 6:
                     listarLibrosMasDescargados();
+                case 7:
+                    pruebas();
+                    break;
                 case 0:
                     System.out.println("\nCerrando la aplicación...\n");
                     break;
@@ -64,6 +77,16 @@ public class Principal {
             }
         }
 
+    }
+
+    private void pruebas() {
+        var json = consumoApi.obtenerDatos(URL_BASE);
+        var datos = conversor.obtenerDatos(json, Datos.class);
+        List<Libro> libros = datos.resultados().stream()
+                .map(l -> new Libro(l))
+                .collect(Collectors.toList());
+        libros.stream()
+                .forEach(System.out::println);
     }
 
     //Consumo desde la API de Gutendex
@@ -79,6 +102,8 @@ public class Principal {
                 .findFirst();
         if (librosOptional.isPresent()) {
             System.out.println("Libro encontrado: " + librosOptional.get());
+            Libro libro = new Libro(librosOptional.get());
+            repositorio.save(libro);
         } else {
             System.out.println("El libro " + nombreLibro + " NO fue encontrado");
         }
@@ -96,16 +121,15 @@ public class Principal {
                 .forEach(System.out::println);
     }
 
-//    private void listarAutoresRegistrados() {
-//        System.out.println("Los autores registrados (Copyright) son: ");
-//        var json = consumoApi.obtenerDatos(URL_BASE + "?copyright=true");
-//        var datos = conversor.obtenerDatos(json, Datos.class);
-//        datos.resultados().stream()
-//                .sorted(Comparator.comparing(DatosLibros::numeroDeDescargas).reversed())
-//                .limit(10)
-//                .map(d -> d.autor().stream().limit(10).map(a -> a.nombre().toUpperCase()).forEach(System.out::println))
-//                .forEach(System.out::println);
-//    }
+    private void listarAutoresRegistrados() {
+        System.out.println("Los autores registrados");
+        var json = consumoApi.obtenerDatos(URL_BASE);
+        var datos = conversor.obtenerDatos(json, Datos.class);
+        datos.resultados().stream()
+                .map(a -> a.autor())
+                .limit(10)
+                .forEach(System.out::println);
+    }
 
     private void listarAutoresVivosPorAnio() {
         System.out.println("Escribe el año para iniciar la búsqueda");
