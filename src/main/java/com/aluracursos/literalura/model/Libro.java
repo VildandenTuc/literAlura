@@ -14,8 +14,6 @@ public class Libro {
     private String titulo;
     @Convert(converter = DatosAutorListConverter.class)
     private List<DatosAutor> autor;
-//    @Convert(converter = StringListConverter.class)
-//    private List<DatosAutor> autor;
     private List<String> idiomas;
     private Double numeroDeDescargas;
 

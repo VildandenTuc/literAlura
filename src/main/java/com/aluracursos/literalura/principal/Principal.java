@@ -146,8 +146,14 @@ public class Principal {
         datos.resultados().stream()
                 .sorted(Comparator.comparing(DatosLibros::numeroDeDescargas).reversed())
                 .limit(10)
-                .map(l -> l.titulo().toUpperCase())
+                .map(l -> l.autor())
                 .forEach(System.out::println);
+//        System.out.println("Escribe el año para iniciar la búsqueda");
+//        var anioAutor = Integer.valueOf(teclado.nextInt()) ;
+//        List<Libro> libros = repositorio.findAll();
+//        libros.stream()
+//                .map(a -> a.getAutor().stream().map(l -> l.anioMuerte()))
+//                .forEach(System.out::println);
     }
 
     private void listarLibrosPorIdioma() {
