@@ -32,8 +32,8 @@ public class Principal {
                     \n******** Menú ********
                     
                     1 - Buscar libro por título
-                    2 - Listar libros registrados
-                    3 - Listar autores registrados (Copyright)
+                    2 - Listar libros registrados en la DB
+                    3 - Listar autores registrados en la DB
                     4 - Listar autores vivos antes de un determinado año
                     5 - Listar libros por idioma
                     6 - Listar los 5 libros más descargados
@@ -132,7 +132,10 @@ public class Principal {
 //                .map(a -> a.autor())
 //                .limit(10)
 //                .forEach(System.out::println);
-
+        List<Libro> libros = repositorio.findAll();
+        libros.stream()
+                .map(a -> a.getAutor())
+                .forEach(System.out::println);
     }
 
     private void listarAutoresVivosPorAnio() {
