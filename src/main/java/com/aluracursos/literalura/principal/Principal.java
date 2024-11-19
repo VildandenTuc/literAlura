@@ -32,7 +32,7 @@ public class Principal {
                     \n******** Menú ********
                     
                     1 - Buscar libro por título
-                    2 - Listar libros registrados 
+                    2 - Listar libros registrados
                     3 - Listar autores registrados (Copyright)
                     4 - Listar autores vivos antes de un determinado año
                     5 - Listar libros por idioma
@@ -113,22 +113,26 @@ public class Principal {
 
     private void listarLibrosRegistrados() {
         System.out.println("Libros registrados: ");
-        var json = consumoApi.obtenerDatos(URL_BASE);
-        var datos = conversor.obtenerDatos(json, Datos.class);
-        datos.resultados().stream()
-                .limit(30)
-                .map(l -> l.titulo().toUpperCase())
+//        var json = consumoApi.obtenerDatos(URL_BASE);
+//        var datos = conversor.obtenerDatos(json, Datos.class);
+//        datos.resultados().stream()
+//                .limit(30)
+//                .map(l -> l.titulo().toUpperCase())
+//                .forEach(System.out::println);
+        List<Libro> libros = repositorio.findAll();
+        libros.stream()
                 .forEach(System.out::println);
     }
 
     private void listarAutoresRegistrados() {
         System.out.println("Los autores registrados");
-        var json = consumoApi.obtenerDatos(URL_BASE);
-        var datos = conversor.obtenerDatos(json, Datos.class);
-        datos.resultados().stream()
-                .map(a -> a.autor())
-                .limit(10)
-                .forEach(System.out::println);
+//        var json = consumoApi.obtenerDatos(URL_BASE);
+//        var datos = conversor.obtenerDatos(json, Datos.class);
+//        datos.resultados().stream()
+//                .map(a -> a.autor())
+//                .limit(10)
+//                .forEach(System.out::println);
+
     }
 
     private void listarAutoresVivosPorAnio() {
