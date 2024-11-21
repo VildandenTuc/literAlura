@@ -1,19 +1,29 @@
 package com.aluracursos.literalura.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
+@Table(name = "autores")
 public class Autor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
     private String nombre;
     private Integer anioNacimiento;
     private Integer anioMuerte;
 
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Libro> libro = new ArrayList<>();
+
     public Autor() {
     }
 
-    public Autor(String nombre, Integer anioNacimiento, Integer anioMuerte) {
-        this.nombre = nombre;
-        this.anioNacimiento = anioNacimiento;
-        this.anioMuerte = anioMuerte;
+    public Autor(DatosAutor datosAutor){
+        this.nombre = datosAutor.nombre();
+        this.anioNacimiento = datosAutor.anioNacimiento();
+        this.anioMuerte = datosAutor.anioMuerte();
     }
 
     public String getNombre() {
@@ -40,12 +50,30 @@ public class Autor {
         this.anioMuerte = anioMuerte;
     }
 
+    public List<Libro> getLibro() {
+        return libro;
+    }
+
+    public void setLibro(List<Libro> libro) {
+        this.libro = libro;
+    }
+
     @Override
+    // Obtener solo el título de los libros
     public String toString() {
-        return "Autor: " +
-                "nombre='" + nombre + '\'' +
-                ", anioNacimiento=" + anioNacimiento +
-                ", anioMuerte=" + anioMuerte +
-                '}';
+        StringBuilder librosTitulos = new StringBuilder();
+        for (Libro libro : libro) {
+            librosTitulos.append(libro.getTitulo()).append(", ");
+        }
+
+        // Eliminar la última coma y espacio
+        if (librosTitulos.length() > 0) {
+            librosTitulos.setLength(librosTitulos.length() - 2);
+        }
+
+        return  "Autor: " + nombre + "\n" +
+                "Fecha de nacimiento: " + anioNacimiento + "\n" +
+                "Fecha de fallecimiento: " + anioMuerte + "\n" +
+                "Libros: " + librosTitulos + "\n";
     }
 }

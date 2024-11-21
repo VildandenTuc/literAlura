@@ -1,7 +1,7 @@
 package com.aluracursos.literalura.model;
 
 import jakarta.persistence.*;
-
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -10,29 +10,33 @@ public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
     @Column(unique = true)
     private String titulo;
-    @Convert(converter = DatosAutorListConverter.class)
-    private List<DatosAutor> autor;
-    private List<String> idiomas;
+
+    @ManyToOne
+    @JoinColumn(name = "autor_id", nullable = false)
+    private Autor autor;
+
+    @Column(name = "nombre_autor")
+    private String nombreAutor;
+
+
+    private String idiomas;
     private Double numeroDeDescargas;
 
-    public Libro() {
-    }
+    public Libro() {}
 
-    public Libro(DatosLibros datosLibros) {
+    public Libro(DatosLibros datosLibros, Autor autor) {
         this.titulo = datosLibros.titulo();
-        this.autor = datosLibros.autor();
-        this.idiomas = datosLibros.idiomas();
+        this.autor = autor;
+        this.nombreAutor = autor.getNombre();
+        setIdiomas(datosLibros.idiomas());
         this.numeroDeDescargas = datosLibros.numeroDeDescargas();
     }
 
     public Long getId() {
         return Id;
-    }
-
-    public void setId(Long id) {
-        Id = id;
     }
 
     public String getTitulo() {
@@ -43,20 +47,20 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<DatosAutor> getAutor() {
+    public Autor getAutor() {
         return autor;
     }
 
-    public void setAutor(List<DatosAutor> autor) {
+    public void setAutor(Autor autor) {
         this.autor = autor;
     }
 
     public List<String> getIdiomas() {
-        return idiomas;
+        return Arrays.asList(idiomas.split(","));
     }
 
     public void setIdiomas(List<String> idiomas) {
-        this.idiomas = idiomas;
+        this.idiomas =  String.join(",", idiomas);
     }
 
     public Double getNumeroDeDescargas() {
@@ -69,11 +73,12 @@ public class Libro {
 
     @Override
     public String toString() {
-        return "Libro{" +
-                "titulo='" + titulo + '\'' +
-                ", autor=" + autor +
-                ", idiomas=" + idiomas +
-                ", numeroDeDescargas=" + numeroDeDescargas +
-                '}';
+        return  "\n--------------------------------------------\n" +
+                "Libro: \n" +
+                "Título = " + titulo + "\n" +
+                "Autor = " + nombreAutor + "\n" +
+                "Idioma = " + idiomas + "\n" +
+                "Número de descargas = " + numeroDeDescargas +
+                "\n--------------------------------------------\n";
     }
 }
