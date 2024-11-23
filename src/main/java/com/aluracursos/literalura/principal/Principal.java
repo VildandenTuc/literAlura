@@ -144,7 +144,7 @@ public class Principal {
     }
 
     private void listarAutoresRegistrados() {
-        System.out.println("Los autores registrados en la base de datos son: \n");
+        System.out.println("\nLos autores registrados en la base de datos son: \n");
         List<Autor> autoresRegistrados = autorRepositorio.findAll();
         if (!autoresRegistrados.isEmpty()){
             autoresRegistrados.stream()
